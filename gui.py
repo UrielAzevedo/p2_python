@@ -5,13 +5,13 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout,
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtCore import Qt
 
-class PrecipitationApp(QMainWindow):
+class TemperaturesApp(QMainWindow):
     def __init__(self):
         super().__init__()
         
         self.data = None
         
-        self.setWindowTitle("Precipitation Data Viewer")
+        self.setWindowTitle("Graficos Dados de Temperatura")
         self.setGeometry(100, 100, 800, 600)
         
         self.layout = QVBoxLayout()
@@ -43,7 +43,6 @@ class PrecipitationApp(QMainWindow):
         file_path, _ = QFileDialog.getOpenFileName(self, "Open CSV", "", "CSV Files (*.csv)")
         if file_path:
             self.data = pd.read_csv(file_path)
-            print(type(self.data))
             self.display_data()
     
     def display_data(self):
@@ -57,10 +56,11 @@ class PrecipitationApp(QMainWindow):
             
             self.table_view.setModel(model)
             self.table_view.resizeColumnsToContents()
-    
+
     def plot_cartesian(self):
         if self.data is not None:
-            self.data.plot(x='meses', y=['temperatura mínima', 'temperatura máxima', 'temperatura média'])
+            data_t = self.data.T
+            data_t.plot()
             plt.title('Gráfico Cartesiano')
             plt.xlabel('Meses')
             plt.ylabel('Temperatura')
@@ -68,7 +68,8 @@ class PrecipitationApp(QMainWindow):
     
     def plot_bar(self):
         if self.data is not None:
-            self.data.plot(x='meses', y=['temperatura mínima', 'temperatura máxima', 'temperatura média'], kind='bar')
+            data_t = self.data.T
+            data_t.plot(kind='bar')
             plt.title('Gráfico de Barras')
             plt.xlabel('Meses')
             plt.ylabel('Temperatura')
@@ -76,6 +77,6 @@ class PrecipitationApp(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = PrecipitationApp()
+    window = TemperaturesApp()
     window.show()
     sys.exit(app.exec_())
